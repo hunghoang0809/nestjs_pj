@@ -37,8 +37,5 @@ export class UserController {
         return this.userService.deleteUser(id)
     }
     
-    @Get()
-    sortUsersList(@Query('order') order: string): Promise<User[]> {
-    return this.userService.sortUsersList(order);
-    }
+    
 }

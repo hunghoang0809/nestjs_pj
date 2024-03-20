@@ -43,14 +43,6 @@ export class UserService {
         return this.userRepository.delete({ id })
     }
 
-    sortUsersList(order: string): Promise<User[]> {
-        let sortOrder: 'ASC' | 'DESC';
-        if (order === 'ASC') {
-            sortOrder = 'ASC';
-        } else {
-            sortOrder = 'DESC';
-        }
-        return this.userRepository.find({ order: { createdAt: sortOrder } });
-    }
+   
 }
 
