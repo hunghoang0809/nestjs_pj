@@ -43,6 +43,33 @@ export class UserService {
         return this.userRepository.delete({ id })
     }
 
-   
-}
+    filterdtUsers(name?: string, email?: string, phone?: string,): Promise<User[]> {
+    let filteredUsers = this.userRepository.createQueryBuilder('user');
+
+    if (name) {
+      filteredUsers = filteredUsers.where('user.name = :name', { name});
+    }
+
+    if (email) {
+      filteredUsers = filteredUsers.orWhere('user.email = :email', { email });
+    }
+
+    if (phone) {
+      filteredUsers = filteredUsers.orWhere('user.phone = :phone', { phone});
+    }
+
+    return filteredUsers.getMany();
+  }
+  getUsersSortedByCreationDate(sortBy: string): Promise<User[]> {
+    let query = this.userRepository.createQueryBuilder('user');
+
+    // Add sorting based on query parameter
+    if (sortBy === 'createdAt') {
+      query = query.orderBy('user.createdAt', 'DESC');
+    } 
+
+    return query.getMany();
+  };
+  }
+
 
