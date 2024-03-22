@@ -7,6 +7,10 @@ import {
   Put,
   Delete,
   Query,
+  UsePipes,
+  ValidationPipe,
+  ParseBoolPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dtos/createUser.dto';
@@ -19,45 +23,42 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getUsers(@Query('name') name?: string,
+  getUsers(
+    @Query('name') name?: string,
     @Query('email') email?: string,
     @Query('phone') phone?: string,
-  @Query('sortBy') sortBy?: string): Promise<User[]> {
+    @Query('sortBy', ParseBoolPipe) sortBy?: boolean,
+  ): Promise<User[]> {
     if (name || email || phone) {
-      return this.userService.filterdtUsers(name, email, phone)
+      return this.userService.filterdtUsers(name, email, phone);
     } else if (sortBy) {
       return this.userService.getUsersSortedByCreationDate(sortBy);
-    }
-    
-    
-    else {
-      
+    } else {
       return this.userService.getUsers();
-     }
+    }
   }
 
   @Post()
+  @UsePipes(new ValidationPipe())
   createUser(@Body() createUserDto: UserDto) {
     this.userService.createUser(createUserDto);
   }
 
   @Get('/:id')
-  getUserById(@Param('id') id: number): Promise<User> {
+  getUserById(@Param('id',ParseIntPipe) id: number): Promise<User> {
     return this.userService.getUserById(id);
   }
 
   @Put('/:id')
   UpdateUser(
-    @Param('id') id: number,
+    @Param('id',ParseIntPipe) id: number,
     @Body() user: UserDto,
   ): Promise<UpdateResult> {
     return this.userService.updateUser(id, user);
   }
 
   @Delete('/:id')
-  deleteUser(@Param('id') id: number): Promise<DeleteResult> {
+  deleteUser(@Param('id',ParseIntPipe) id: number): Promise<DeleteResult> {
     return this.userService.deleteUser(id);
   }
-
-  
 }
