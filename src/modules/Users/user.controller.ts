@@ -9,8 +9,9 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  ParseBoolPipe,
   ParseIntPipe,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dtos/createUser.dto';
@@ -27,7 +28,7 @@ export class UserController {
     @Query('name') name?: string,
     @Query('email') email?: string,
     @Query('phone') phone?: string,
-    @Query('sortBy', ParseBoolPipe) sortBy?: boolean,
+    @Query('sortBy') sortBy?: boolean,
   ): Promise<User[]> {
     if (name || email || phone) {
       return this.userService.filterdtUsers(name, email, phone);
@@ -46,7 +47,12 @@ export class UserController {
 
   @Get('/:id')
   getUserById(@Param('id',ParseIntPipe) id: number): Promise<User> {
-    return this.userService.getUserById(id);
+    const user= this.userService.getUserById(id); 
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST)
+    } else {
+      return user
+    }
   }
 
   @Put('/:id')
@@ -56,9 +62,22 @@ export class UserController {
   ): Promise<UpdateResult> {
     return this.userService.updateUser(id, user);
   }
+  @Delete()
+  deleteAll() {
+    
+  }
 
   @Delete('/:id')
   deleteUser(@Param('id',ParseIntPipe) id: number): Promise<DeleteResult> {
     return this.userService.deleteUser(id);
   }
+  @Post('active')
+  active(@Body('id') id: number) {
+    return this.userService.active(id);
+  }
+  @Post('inactive')
+  inactive(@Body('id') id: number) {
+    return this.userService.inActive(id)
+  }
+
 }

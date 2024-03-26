@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, isNotEmpty } from "class-validator"
+import { IsEmail, IsNotEmpty, IsNumber, isNotEmpty } from "class-validator"
 
 
 export class UserDto{
@@ -10,8 +10,9 @@ export class UserDto{
     email: string
     
     @IsNotEmpty()
+    @IsNumber()
     phone: number
     
     
-    active: boolean
+    isActive: boolean
 }

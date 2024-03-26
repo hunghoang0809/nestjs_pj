@@ -67,4 +67,24 @@ export class UserService {
 
     return query.getMany();
   }
+
+  async active (id: number):Promise<void> {
+    const user = await this.userRepository.findOneBy({ id })
+   
+    
+      if (!user.isActive) {
+        user.isActive = true
+        this.userRepository.save(user)
+
+      }
+    
+  }
+
+  async inActive(id: number) {
+    const user = await this.userRepository.findOneBy({ id })
+    if (user) {
+      user.isActive=false
+    }
+    await this.userRepository.save(user)
+  }
 }
