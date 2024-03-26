@@ -1,3 +1,4 @@
+import { minLength } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({})
@@ -17,6 +18,6 @@ export class User {
     @Column()
     createdAt: Date
 
-    @Column({ default: true })
+    @Column({ default: false })
     isActive: boolean
 }
